@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define NUM_ARMARIOS 8
+
+void criararmarios() {
+    unsigned char armarios
+    printf("Posição dos armários: \n");
+    for (int i = 0; i < NUMARMARIOS; i++) {
+        if (armarios & (1 << i)) {
+            printf("Armário %d: Ocupado\n", i + 1);
+        } else {
+            printf("Armário %d: Livre\n", i + 1);
+        }
+    }
+}
+void ocupararmario(unsigned char *armarios) {
+    unsigned char livres = ~(*armarios);
+    if (livres == 0) {
+        printf("Não há armários livres. \n");
+        return;
+    }
+    srand(time(NULL));
+    int armariolivre = rand() % NUMARMARIOS;
+
+    while (!(livres & (1 << armariolivre))) {
+        armariolivre = rand() % NUMARMARIOS;
+    }
+    *armarios |= (1 << armariolivre);
+    printf("Armário %d ocupado.\n", armariolivre + 1);
+}
+void liberararmario(unsigned char *armarios) {
+    int pos;
+    printf("Digite a posição do armário para liberar (1 a 8): ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > NUMARMARIOS) {
+        printf("Posição inválida. Tente novamente.\n");
+        return;
+    }
+    if (*armarios & (1 << (pos - 1))) {
+        *armarios &= ~(1 << (pos - 1)); 
+        printf("Armário %d liberado.\n", pos);
+    } else {
+        printf("Armário %d livre.\n", pos);
+    }
+}
+
+int main() {
+    unsigned char armarios = 0; 
+
+    int opcao;
+    do {
+        // Exibe o menu
+        printf("\nMenu:\n");
+        printf("1. Ocupar armário\n");
+        printf("2. Liberar armário\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                ocupararmario(&armarios); 
+                break;
+            case 2:
+                liberararmario(&armarios);
+                break;
+            case 3:
+                printf("Saindo do programa.\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+        criararmarios(armarios);
+    } while (opcao != 3);
+
+    return 0;
+}
